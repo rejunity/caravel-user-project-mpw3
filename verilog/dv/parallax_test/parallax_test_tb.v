@@ -32,8 +32,16 @@ module parallax_test_tb;
 	wire [37:0] mprj_io;
 	wire [15:0] checkbits;
 
+	wire hsync;
+	wire vsync;
+	wire [2:0] rgb;
+
 	assign checkbits = mprj_io[31:16];
 	assign mprj_io[3] = (CSB == 1'b1) ? 1'b1 : 1'bz;
+
+	assign hsync = mprj_io[8];
+	assign vsync = mprj_io[9];
+	assign rgb = mprj_io[12:10];
 
 	always #12.5 clock <= (clock === 1'b0);
 
@@ -84,12 +92,14 @@ module parallax_test_tb;
 */
 	initial begin
 		// Observe Output pins [9:8]: HSYNC & VSYNC
-		wait(mprj_io_0[9:8] == 2'b00);
-		wait(mprj_io_0[9:8] == 2'b01);
+		//wait(mprj_io_0[9:8] == 2'b00);
+		//wait(mprj_io_0[9:8] == 2'b01);
+		wait(hsync == 0);
+		wait(hsync == 1);
 
 		repeat (100) begin
-			wait(mprj_io_0[9:8] == 2'b00);
-			wait(mprj_io_0[9:8] == 2'b01);
+			wait(hsync == 0);
+			wait(hsync == 1);
 			$display("Line Passed");
 		end
 
