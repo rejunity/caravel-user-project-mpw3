@@ -20,7 +20,7 @@ module parallax(
     inout reset,
     output hsync,
     output vsync,
-    output [2:0] rgb,
+    output [2:0] rgb
 );
   wire display_on;
   wire [9:0] hpos;
