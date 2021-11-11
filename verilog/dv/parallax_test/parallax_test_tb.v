@@ -76,9 +76,13 @@ module parallax_test_tb;
 		$finish;
 	end
 
-	// always @(mprj_io) begin
-	// 	#1 $display("MPRJ-IO state = %b ", mprj_io[12:8]);
-	// end
+	always @(mprj_io) begin
+		#1 $display("RGB=%b   HSYNC=%b VSYNC=%b", rgb, hsync, vsync);
+		if (rgb != 0 && vsync != 1)
+			$display("004 failed, RGB signal inside VSYNC");
+		if (rgb != 0 && hsync != 1)
+			$display("005 failed, RGB signal inside HSYNC");
+	end
 
 	initial begin
 		wait(hsync == 1);

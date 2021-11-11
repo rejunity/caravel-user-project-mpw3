@@ -145,12 +145,15 @@ module parallax(
     end
 
 
-  assign rgb =
+  always @(posedge clk) begin
+  //assign rgb =
+    rgb <=
     (star_enable && (&lfsr[15:7]) ? lfsr[2:0] : 0) +
     (star2_enable && (&lfsr2[14:6]) ? lfsr2[2:0] : 0) +
     (star3_enable && (&lfsr3[13:7]) ? lfsr3[2:0] : 0) +
     ((star_enable && mount < vpos) ? 2 : 0) +
     ((star_enable && mount2 < vpos) ? 4 : 0);
+  end
 
 endmodule
 `default_nettype wire
