@@ -16,18 +16,18 @@ module parallax(
     inout vssd2,  // User area 2 digital ground
 `endif
 
-    input clk;
-    inout reset;
-    output hsync;
-    output vsync;
-    output [2:0] rgb;
+    input clk,
+    inout reset,
+    output hsync,
+    output vsync,
+    output [2:0] rgb,
 
     // CARAVEL
-    output oeb_hs;
-    output oeb_vs;
-    output oeb_rgb0;
-    output oeb_rgb1;
-    output oeb_rgb2;
+    output oeb_hs,
+    output oeb_vs,
+    output oeb_rgb0,
+    output oeb_rgb1,
+    output oeb_rgb2
 );
   wire display_on;
   wire [9:0] hpos;
