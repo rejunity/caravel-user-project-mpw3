@@ -76,13 +76,13 @@ module parallax_test_tb;
 		$finish;
 	end
 
-	always @(mprj_io) begin
-		#1 $display("RGB=%b   HSYNC=%b VSYNC=%b", rgb, hsync, vsync);
-		if (rgb != 0 && vsync != 1)
-			$display("004 failed, RGB signal inside VSYNC");
-		if (rgb != 0 && hsync != 1)
-			$display("005 failed, RGB signal inside HSYNC");
-	end
+	// always @(mprj_io) begin
+	// 	#1 $display("RGB=%b   HSYNC=%b VSYNC=%b", rgb, hsync, vsync);
+	// 	if (rgb != 0 && vsync != 1)
+	// 		$display("004 failed, RGB signal inside VSYNC");
+	// 	if (rgb != 0 && hsync != 1)
+	// 		$display("005 failed, RGB signal inside HSYNC");
+	// end
 
 	initial begin
 		wait(hsync == 1);
@@ -90,15 +90,15 @@ module parallax_test_tb;
 		repeat (2) begin // check 2 frames
 			if (hsync != 1 ||
 				vsync != 1 ||
-				rgb != 0) $display("000 failed!");
+				rgb != 0) $display("000 failed! mprj_io=%b", mprj_io);
 			$display("Vertical retrace started");
 
 			// VBLANK
-			repeat (11) begin
+			repeat (9) begin
 				wait(hsync == 0);
 				wait(hsync == 1);
 				if (vsync != 1 ||
-					rgb != 0) $display("001 failed!");
+					rgb != 0) $display("001 failed! mprj_io=%b", mprj_io);
 				$display("VBLANK line started");
 			end
 
@@ -109,17 +109,17 @@ module parallax_test_tb;
 				wait(hsync == 0);
 				wait(hsync == 1);
 				if (vsync != 0 ||
-					rgb != 0) $display("002 failed!");
+					rgb != 0) $display("002 failed! mprj_io=%b", mprj_io);
 				$display("VSYNC line started");
 			end
 			#1 wait(vsync == 1);
 			$display("Visible portion of the frame started");
 
 			// ACTIVE
-			repeat (506) begin
+			repeat (508) begin
 				wait(hsync == 0);
 				wait(hsync == 1);
-				if (vsync != 1) $display("003 failed!");
+				if (vsync != 1) $display("003 failed! mprj_io=%b", mprj_io);
 				$display("ACTIVE line started");
 			end
 
