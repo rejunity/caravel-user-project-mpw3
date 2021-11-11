@@ -99,7 +99,7 @@ parallax i_parallax (
 
     .hsync(io_out[8]),  // skip 0..7 pins
     .vsync(io_out[9]),
-    .rgb(io_out[12:10]),
+    .rgb(io_out[12:10])
 );
 
     // always enable all outputs
