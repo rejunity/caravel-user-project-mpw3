@@ -81,13 +81,12 @@ module parallax_test_tb;
 		$finish;
 	end
 */
-	integer i;
 	initial begin
 		// Observe Output pins [9:8]: HSYNC & VSYNC
 		wait(mprj_io_0[9:8] == 2'b00);
 		wait(mprj_io_0[9:8] == 2'b01);
 
-		for (i = 0; i < 100; i = i + 1) begin
+		repeat (100) begin
 			wait(mprj_io_0[9:8] == 2'b00);
 			wait(mprj_io_0[9:8] == 2'b01);
 			$display("Line Passed");
