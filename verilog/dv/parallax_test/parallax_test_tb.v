@@ -57,12 +57,15 @@ module parallax_test_tb;
 		// .vsync(io_out[9]),
 		// .rgb(io_out[12:10]),
 
-
-		// Repeat cycles of 1000 clock edges as needed to complete testbench
-		repeat (100) begin
-			repeat (832*10) @(posedge clock);
-			$display("8320 cycles passed (10 lines x 832 pixel clocks)");
+		// Repeat enough cycles for more than 2 frames of VGA signal to complete testbench
+		repeat (3) begin
+			repeat (52) begin
+				repeat (832*10) @(posedge clock);
+				$display("8320 cycles passed (10 lines x 832 pixel clocks)");
+			end
+			$display("frame passed");
 		end
+
 		$display("%c[1;31m",27);
 		`ifdef GL
 			$display ("Monitor: Timeout, VGA signal (GL) Failed");
@@ -80,37 +83,43 @@ module parallax_test_tb;
 	initial begin
 		wait(hsync == 1);
 		#1;
-		if (hsync != 1 ||
-			vsync != 1 ||
-			rgb != 0) $display("000 failed.");
-		$display("Vertical retrace started");
+		repeat (2) begin // check 2 frames
+			if (hsync != 1 ||
+				vsync != 1 ||
+				rgb != 0) $display("000 failed!");
+			$display("Vertical retrace started");
 
-		// VBLANK
-		repeat (11) begin
-			wait(hsync == 0);
-			wait(hsync == 1);
-			if (vsync != 1 ||
-				rgb != 0) $display("001 failed.");
-			$display("VBLANK line started");
-		end
+			// VBLANK
+			repeat (11) begin
+				wait(hsync == 0);
+				wait(hsync == 1);
+				if (vsync != 1 ||
+					rgb != 0) $display("001 failed!");
+				$display("VBLANK line started");
+			end
 
-		// VSYNC
-		#1 wait(vsync == 0);
-		repeat (3) begin
-			wait(hsync == 0);
-			wait(hsync == 1);
-			if (vsync != 0 ||
-				rgb != 0) $display("002 failed.");
-			$display("VSYNC line started");
-		end
-		#1 wait(vsync == 1);
+			// VSYNC
+			#1 wait(vsync == 0);
+			$display("Vertical sync period started");
+			repeat (3) begin
+				wait(hsync == 0);
+				wait(hsync == 1);
+				if (vsync != 0 ||
+					rgb != 0) $display("002 failed!");
+				$display("VSYNC line started");
+			end
+			#1 wait(vsync == 1);
+			$display("Visible portion of the frame started");
 
-		// ACTIVE
-		repeat (10) begin
-			wait(hsync == 0);
-			wait(hsync == 1);
-			if (vsync != 1) $display("003 failed.");
-			$display("ACTIVE line started");
+			// ACTIVE
+			repeat (506) begin
+				wait(hsync == 0);
+				wait(hsync == 1);
+				if (vsync != 1) $display("003 failed!");
+				$display("ACTIVE line started");
+			end
+
+			$display("Frame ended");
 		end
 
 		`ifdef GL
