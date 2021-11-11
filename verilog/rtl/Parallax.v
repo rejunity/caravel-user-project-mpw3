@@ -16,7 +16,7 @@ module parallax(
     inout vssd2,  // User area 2 digital ground
 `endif
 
-    input clk
+    input clk;
     inout reset;
     output hsync;
     output vsync;
