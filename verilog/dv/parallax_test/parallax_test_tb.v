@@ -24,23 +24,18 @@
 module parallax_test_tb;
 	reg clock;
 	reg RSTB;
-	reg CSB;
 
 	reg power1, power2;
 
 	wire gpio;
 	wire [37:0] mprj_io;
-	wire [15:0] checkbits;
 
 	wire hsync;
 	wire vsync;
 	wire [2:0] rgb;
 
-	assign checkbits = mprj_io[31:16];
-	assign mprj_io[3] = (CSB == 1'b1) ? 1'b1 : 1'bz;
-
-	assign hsync = mprj_io[8];
-	assign vsync = mprj_io[9];
+	assign hsync = !mprj_io[8];
+	assign vsync = !mprj_io[9];
 	assign rgb = mprj_io[12:10];
 
 	always #12.5 clock <= (clock === 1'b0);
@@ -66,7 +61,7 @@ module parallax_test_tb;
 		// Repeat cycles of 1000 clock edges as needed to complete testbench
 		repeat (100) begin
 			repeat (832*10) @(posedge clock);
-			$display("+ 10 linea (8320 cycles)");
+			$display("+ 10 lines (8320 cycles)");
 		end
 		$display("%c[1;31m",27);
 		`ifdef GL
@@ -91,15 +86,9 @@ module parallax_test_tb;
 	end
 */
 	initial begin
-		// Observe Output pins [9:8]: HSYNC & VSYNC
-		//wait(mprj_io_0[9:8] == 2'b00);
-		//wait(mprj_io_0[9:8] == 2'b01);
-		wait(hsync == 0);
-		wait(hsync == 1);
-
 		repeat (100) begin
-			wait(hsync == 0);
 			wait(hsync == 1);
+			wait(hsync == 0);
 			$display("Line Passed");
 		end
 
@@ -113,29 +102,33 @@ module parallax_test_tb;
 
 	initial begin
 		RSTB <= 1'b0;
-		CSB  <= 1'b1;		// Force CSB high
-		#2000;
-		RSTB <= 1'b1;	    	// Release reset
-		#170000;
-		CSB = 1'b0;		// CSB can be released
+		#100;
+		RSTB <= 1'b1;	    // Release reset
 	end
 
-	initial begin		// Power-up sequence
+	initial begin			// Power-up sequence
 		power1 <= 1'b0;
 		power2 <= 1'b0;
-		#200;
+		power3 <= 1'b0;
+		power4 <= 1'b0;
+
+		#8;
 		power1 <= 1'b1;
-		#200;
+		#8;
 		power2 <= 1'b1;
+		#8;
+		power3 <= 1'b1;
+		#8;
+		power4 <= 1'b1;
 	end
 
-    	wire flash_csb;
+    wire flash_csb;
 	wire flash_clk;
 	wire flash_io0;
 	wire flash_io1;
 
 	wire VDD1V8;
-    	wire VDD3V3;
+    wire VDD3V3;
 	wire VSS;
 
 	assign VDD3V3 = power1;
