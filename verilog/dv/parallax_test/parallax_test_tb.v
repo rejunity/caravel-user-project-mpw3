@@ -72,6 +72,7 @@ module parallax_test_tb;
 
 	always @(mprj_io) begin
 		#1 $display("MPRJ-IO state = %b ", mprj_io[12:8])
+	end
 
 /*	initial begin
 		wait(checkbits == 16'h AB60);
