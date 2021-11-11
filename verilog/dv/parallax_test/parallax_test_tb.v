@@ -25,7 +25,7 @@ module parallax_test_tb;
 	reg clock;
 	reg RSTB;
 
-	reg power1, power2;
+	reg power1, power2, power3, power4;
 
 	wire gpio;
 	wire [37:0] mprj_io;
@@ -109,8 +109,6 @@ module parallax_test_tb;
 	initial begin			// Power-up sequence
 		power1 <= 1'b0;
 		power2 <= 1'b0;
-		power3 <= 1'b0;
-		power4 <= 1'b0;
 
 		#8;
 		power1 <= 1'b1;
