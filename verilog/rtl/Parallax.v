@@ -21,13 +21,6 @@ module parallax(
     output hsync,
     output vsync,
     output [2:0] rgb,
-
-    // CARAVEL
-    output oeb_hs,
-    output oeb_vs,
-    output oeb_rgb0,
-    output oeb_rgb1,
-    output oeb_rgb2
 );
   wire display_on;
   wire [9:0] hpos;
@@ -40,14 +33,6 @@ module parallax(
   reg [9:0] mount, mount_;
   reg [9:0] mount2, mount2_;
   reg [4:0] frame;
-
-  // CARAVEL: always enable output
-  // NOTE: oeb (output enable bar) is inverted signal
-  assign oeb_hs = 0;
-  assign oeb_vs = 0;
-  assign oeb_rgb0 = 0;
-  assign oeb_rgb1 = 0;
-  assign oeb_rgb2 = 0;
 
   VgaSyncGen vga(
     .px_clk(clk),
@@ -145,15 +130,12 @@ module parallax(
     end
 
 
-  always @(posedge clk) begin
-  //assign rgb =
-    rgb <=
+  assign rgb =
     (star_enable && (&lfsr[15:7]) ? lfsr[2:0] : 0) +
     (star2_enable && (&lfsr2[14:6]) ? lfsr2[2:0] : 0) +
     (star3_enable && (&lfsr3[13:7]) ? lfsr3[2:0] : 0) +
     ((star_enable && mount < vpos) ? 2 : 0) +
     ((star_enable && mount2 < vpos) ? 4 : 0);
-  end
 
 endmodule
 `default_nettype wire
