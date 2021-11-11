@@ -34,8 +34,8 @@ module parallax_test_tb;
 	wire vsync;
 	wire [2:0] rgb;
 
-	assign hsync = !mprj_io[8];
-	assign vsync = !mprj_io[9];
+	assign hsync = mprj_io[8];
+	assign vsync = mprj_io[9];
 	assign rgb = mprj_io[12:10];
 
 	always #12.5 clock <= (clock === 1'b0);
@@ -61,41 +61,62 @@ module parallax_test_tb;
 		// Repeat cycles of 1000 clock edges as needed to complete testbench
 		repeat (100) begin
 			repeat (832*10) @(posedge clock);
-			$display("+ 10 lines (8320 cycles)");
+			$display("8320 cycles passed (10 lines x 832 pixel clocks)");
 		end
 		$display("%c[1;31m",27);
 		`ifdef GL
-			$display ("Monitor: Timeout, Test Mega-Project IO (GL) Failed");
+			$display ("Monitor: Timeout, VGA signal (GL) Failed");
 		`else
-			$display ("Monitor: Timeout, Test Mega-Project IO (RTL) Failed");
+			$display ("Monitor: Timeout, VGA signal (RTL) Failed");
 		`endif
 		$display("%c[0m",27);
 		$finish;
 	end
 
-	always @(mprj_io) begin
-		#1 $display("MPRJ-IO state = %b ", mprj_io[12:8]);
-	end
+	// always @(mprj_io) begin
+	// 	#1 $display("MPRJ-IO state = %b ", mprj_io[12:8]);
+	// end
 
-/*	initial begin
-		wait(checkbits == 16'h AB60);
-		$display("Monitor: Test 2 MPRJ-Logic Analyzer Started");
-		wait(checkbits == 16'h AB61);
-		$display("Monitor: Test 2 MPRJ-Logic Analyzer Passed");
-		$finish;
-	end
-*/
 	initial begin
-		repeat (100) begin
-			wait(hsync == 1);
+		wait(hsync == 1);
+		#1;
+		if (hsync != 1 ||
+			vsync != 1 ||
+			rgb != 0) $display("000 failed.");
+		$display("Vertical retrace started");
+
+		// VBLANK
+		repeat (11) begin
 			wait(hsync == 0);
-			$display("Line Passed");
+			wait(hsync == 1);
+			if (vsync != 1 ||
+				rgb != 0) $display("001 failed.");
+			$display("VBLANK line started");
+		end
+
+		// VSYNC
+		#1 wait(vsync == 0);
+		repeat (3) begin
+			wait(hsync == 0);
+			wait(hsync == 1);
+			if (vsync != 0 ||
+				rgb != 0) $display("002 failed.");
+			$display("VSYNC line started");
+		end
+		#1 wait(vsync == 1);
+
+		// ACTIVE
+		repeat (10) begin
+			wait(hsync == 0);
+			wait(hsync == 1);
+			if (vsync != 1) $display("003 failed.");
+			$display("ACTIVE line started");
 		end
 
 		`ifdef GL
-		$display("Monitor: Test 1 Mega-Project IO (GL) Passed");
+		$display("Monitor: VGA signal (GL) Passed");
 		`else
-		$display("Monitor: Test 1 Mega-Project IO (RTL) Passed");
+		$display("Monitor: VGA signal (RTL) Passed");
 		`endif
 		$finish;
 	end

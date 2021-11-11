@@ -45,7 +45,7 @@ module VgaSyncGen (
 
     // Video structure constants.
     parameter activeHvideo = 640;               // Width of visible pixels.
-    parameter activeVvideo =  480;              // Height of visible lines.
+    parameter activeVvideo = 480;               // Height of visible lines.
     parameter hfp = 24;                         // Horizontal front porch length.
     parameter hpulse = 40;                      // Hsync pulse length.
     parameter hbp = 128;                        // Horizontal back porch length.

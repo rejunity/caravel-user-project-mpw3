@@ -82,7 +82,6 @@ void main()
         reg_mprj_xfer = 1;
         while (reg_mprj_xfer == 1);
 
-
         // activate the project by setting the 0th bit of 2nd bank of LA
         reg_la1_iena = 0; // input enable off
         reg_la1_oenb = 0; // output enable bar low (enabled)
@@ -95,57 +94,5 @@ void main()
         reg_la0_data = 0;
 
         // no need for anything else as this design is free running.
-
-/*
-
-        // Configure LA[64] LA[65] as outputs from the cpu
-        reg_la2_oenb = reg_la2_iena = 0xFFFFFFFC;
-
-        // Set clk & reset to one
-        reg_la2_data = 0x00000003;
-
-        // Toggle clk & de-assert reset
-        for (i=0; i<11; i=i+1) {
-                clk = !clk;
-                reg_la2_data = 0x00000000 | clk;
-        }
-*/
-
-/*
-	// Configure All LA probes as inputs to the cpu
-	reg_la0_oenb = reg_la0_iena = 0xFFFFFFFF;    // [31:0]
-	reg_la1_oenb = reg_la1_iena = 0xFFFFFFFF;    // [63:32]
-	reg_la2_oenb = reg_la2_iena = 0xFFFFFFFF;    // [95:64]
-	reg_la3_oenb = reg_la3_iena = 0xFFFFFFFF;    // [127:96]
-
-	// Flag start of the test
-	reg_mprj_datal = 0xAB600000;
-
-	// Configure LA[64] LA[65] as outputs from the cpu
-	reg_la2_oenb = reg_la2_iena = 0xFFFFFFFC;
-
-	// Set clk & reset to one
-	reg_la2_data = 0x00000003;
-
-        // DELAY
-        for (i=0; i<5; i=i+1) {}
-
-        // 1 FRAME = 832 x 520 = 432640 dots
-        // HSYNC: ^^^^ [24] ____ [64] ^^^^ ... 832
-        // VSYNC: ^^^^ [ 9] ____ [12] ^^^^ ... 520
-
-
-        // Toggle clk & de-assert reset
-        for (i=0; i<832*520*2; i=i+1) {
-                clk = !clk;
-                reg_la2_data = 0x00000000 | clk;
-
-                hsync = reg_la0_data &
-        }
-
-	if (reg_la0_data >= 0x05) {
-		reg_mprj_datal = 0xAB610000;
-	}
-*/
 }
 
